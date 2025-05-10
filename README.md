@@ -1,16 +1,24 @@
 # 🎮 Actions & Stuff – Minecraft Bedrock Add-On
 
+![Actions & Stuff Banner](https://www.minecraft.net/content/dam/minecraft/pmp/marketplace/2025/may/actions-and-stuff/actions-and-stuff-hero.jpg)
+
 **Actions & Stuff** is a community-driven add-on designed to enhance your Minecraft Bedrock Edition experience with improved animations, textures, and immersive features.
+
+> 🔗 **Official Marketplace Link**: [Actions & Stuff by Oreville Studios](https://www.minecraft.net/en-us/marketplace/pdp?id=61c7a786-d7ad-49e0-a710-817121cd9795)
+
+---
 
 ## ✨ Features
 
-- **Realistic Player Animations**: Enhanced animations for actions like walking, jumping, and attacking.
-- **Improved Mob Animations**: New and improved animations for various mobs.
-- **3D Item Models**: Items now have three-dimensional models for a more immersive experience.
-- **Custom Armor**: Unique armor designs that differ from standard sets.
-- **Complete Texture Overhaul**: Comprehensive and faithful revamp of textures.
-- **Compatibility with Vanilla and Custom Texture Packs**: Seamless integration with default and custom textures.
-- **Optimized Performance**: Ensures smooth gameplay across devices.
+- **🎭 Realistic Player Animations**: Enhanced animations for actions like walking, jumping, and attacking.
+- **🧸 Improved Mob Animations**: New and improved animations for various mobs.
+- **🗡️ 3D Item Models**: Items now have three-dimensional models for a more immersive experience.
+- **🛡️ Custom Armor**: Unique armor designs that differ from standard sets.
+- **🎨 Complete Texture Overhaul**: Comprehensive and faithful revamp of textures.
+- **🎮 Compatibility with Vanilla and Custom Texture Packs**: Seamless integration with default and custom textures.
+- **⚙️ Optimized Performance**: Ensures smooth gameplay across devices.
+
+---
 
 ## 📥 Installation Guide
 
@@ -43,6 +51,8 @@ Direct installation of add-ons is not supported on consoles. To use this add-on:
 3. Upload the world to your Minecraft Realm.
 4. Access the Realm on your console to play with the add-on.
 
+---
+
 ## ⚠️ Disclaimer
 
 This website is **not the official page of the Actions & Stuff creator**.  
@@ -54,3 +64,7 @@ All rights to the content, including textures, models, and concepts, belong to t
 > We simply host the files for easy access and update tracking.
 
 This project is part of a **community-driven effort** and is not affiliated with Mojang, Microsoft, or the official Minecraft Marketplace. Any credits belong to the original developers and artists.
+
+---
+
+![Minecraft Marketplace](https://www.minecraft.net/en-us/marketplace/pdp/oreville-studios/actions--stuff-1.4/61c7a786-d7ad-49e0-a710-817121cd9795)
