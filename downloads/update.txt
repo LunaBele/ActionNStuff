@@ -1,0 +1,14 @@
+🆕 Actions & Stuff v1.4.0 – Changelog
+🧸 Enhanced Baby Mobs
+Introduced new animations and behaviors for baby mobs, making them more dynamic and engaging.
+
+🎨 Texture and Particle Improvements
+Refined textures for various blocks and items, enhancing visual clarity.
+
+Updated particle effects, including more realistic smoke, glowing embers, and splashes.
+
+🔊 Immersive Audio Enhancements
+Revamped sound effects for footsteps, environmental interactions, and mob sounds, providing a more immersive auditory experience.
+
+⚙️ Performance Optimization
+Optimized the add-on to ensure smooth performance across devices, minimizing lag and ensuring stability.

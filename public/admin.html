@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Upload - ActionNStuff</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      padding: 2rem;
+      background-color: #f0f2f5;
+    }
+    #form-section {
+      display: none;
+    }
+    #progress-bar {
+      height: 24px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="mb-4">Admin Panel - ActionNStuff</h2>
+
+    <div id="auth-section">
+      <label for="passcode" class="form-label">Enter Admin Passcode:</label>
+      <input type="password" id="passcode" class="form-control" placeholder="Enter Passcode">
+      <button class="btn btn-primary mt-2" onclick="checkPasscode()">Submit</button>
+      <div id="auth-error" class="text-danger mt-2" style="display:none;">Incorrect passcode!</div>
+    </div>
+
+    <div id="form-section">
+      <form id="upload-form" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="file" class="form-label">Upload .mcpack File</label>
+          <input type="file" name="file" id="file" class="form-control" accept=".mcpack" required>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <input type="number" class="form-control" id="ver1" placeholder="v1" required>
+          </div>
+          <div class="col">
+            <input type="number" class="form-control" id="ver2" placeholder="5" required>
+          </div>
+          <div class="col">
+            <input type="number" class="form-control" id="ver3" placeholder="0" required>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <label for="notes" class="form-label">What’s Updated?</label>
+          <textarea id="notes" class="form-control" rows="4" placeholder="Changelog notes..." required></textarea>
+        </div>
+
+        <button class="btn btn-success mt-3" type="submit">Upload & Publish</button>
+
+        <div class="progress mt-3" id="progress-bar">
+          <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%;" id="progress-fill">0%</div>
+        </div>
+
+        <div class="mt-3" id="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function checkPasscode() {
+      const code = document.getElementById('passcode').value;
+      if (code === '11200805') {
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('form-section').style.display = 'block';
+      } else {
+        document.getElementById('auth-error').style.display = 'block';
+      }
+    }
+
+    document.getElementById('upload-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const file = document.getElementById('file').files[0];
+      const version = `${document.getElementById('ver1').value}.${document.getElementById('ver2').value}.${document.getElementById('ver3').value}`;
+      const notes = document.getElementById('notes').value;
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('version', version);
+      formData.append('notes', notes);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/admin/upload', true);
+
+      const progressBar = document.getElementById('progress-bar');
+      const progressFill = document.getElementById('progress-fill');
+      progressBar.style.display = 'block';
+      progressFill.style.width = '0%';
+      progressFill.innerText = '0%';
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percent = Math.round((event.loaded / event.total) * 100);
+          progressFill.style.width = percent + '%';
+          progressFill.innerText = percent + '%';
+        }
+      };
+
+      xhr.onload = () => {
+        document.getElementById('status').innerHTML = `<div class="alert alert-info">${xhr.responseText}</div>`;
+        progressBar.style.display = 'none';
+      };
+
+      xhr.onerror = () => {
+        document.getElementById('status').innerHTML = `<div class="alert alert-danger">❌ Upload failed.</div>`;
+        progressBar.style.display = 'none';
+      };
+
+      xhr.send(formData);
+    });
+  </script>
+</body>
+</html>

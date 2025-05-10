@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ActionNStuff - Official Site</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #00E676;
+            --secondary-color: #2979FF;
+            --dark-bg: #000000;
+            --card-bg: #111111;
+            --text-color: #ffffff;
+            --accent-color: #FF5722;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1000px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--text-color);
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        h1:hover {
+            text-shadow: 0 0 20px rgba(0, 230, 118, 0.8);
+            transform: scale(1.02);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .section-title:hover::after {
+            width: 100%;
+        }
+
+        .version-info {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .version-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 230, 118, 0.2);
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .download-btn {
+            background-color: var(--primary-color);
+            color: #000000;
+            border: none;
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .download-btn:hover {
+            background-color: #00c853;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 230, 118, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 230, 118, 0);
+            }
+        }
+
+        .marketplace-btn {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(41, 121, 255, 0.3);
+        }
+
+        .marketplace-btn:hover {
+            background-color: #2962FF;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(41, 121, 255, 0.4);
+        }
+
+        .changelog {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .changelog:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.5s forwards;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .feature-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: all 0.5s ease;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .video-container:hover {
+            transform: scale(1);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .feature-item {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            transform: translateX(-20px);
+            opacity: 0;
+            animation: slideRight 0.5s forwards;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        @keyframes slideRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .feature-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .feature-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .feature-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .feature-item:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .feature-item:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .feature-item:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .feature-item:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .feature-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover h4 {
+            transform: translateX(5px);
+        }
+
+        .note-section {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            font-size: 0.9rem;
+            color: #aaaaaa;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeIn 1.8s ease-out;
+        }
+
+        .note-section:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-section {
+            padding: 50px 0 30px 0;
+            text-align: center;
+            border-bottom: 1px solid #333333;
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .thank-you {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeIn 1.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .thank-you::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 230, 118, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .thank-you:hover::before {
+            opacity: 1;
+            animation: pulse-bg 2s infinite;
+        }
+
+        @keyframes pulse-bg {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+        }
+
+        .thank-you:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 230, 118, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header-section {
+                padding: 30px 0 20px 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .feature-card, .feature-item {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .marketplace-btn {
+                margin-left: 0 !important;
+            }
+
+            .video-container {
+                margin: 20px 0;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 230, 118, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00c853;
+        }
+
+        /* Stats Counter Styles */
+        .stats-counter {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeIn 1.3s ease-out;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .stats-counter:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            flex: 1;
+            min-width: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #aaaaaa;
+        }
+
+        /* Rating System Styles */
+        .rating-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeIn 1.4s ease-out;
+            text-align: center;
+        }
+
+        .rating-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .rating-title {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .stars {
+            font-size: 30px;
+            cursor: pointer;
+            color: #555;
+            transition: all 0.2s ease;
+        }
+
+        .stars .star {
+            margin: 0 5px;
+            transition: all 0.2s ease;
+        }
+
+        .stars .star:hover,
+        .stars .star.active {
+            color: #FFD700;
+            transform: scale(1.2);
+        }
+
+        .rating-stats {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaaaaa;
+        }
+
+        .rating-message {
+            margin-top: 10px;
+            height: 20px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+
+        .rating-submit {
+            margin-top: 15px;
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .rating-submit:hover {
+            background-color: #00c853;
+            transform: translateY(-2px);
+        }
+
+        .already-rated {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaaaaa;
+        }
+
+        /* Geo-restriction styles */
+        #geo-restriction {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .restriction-content {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 600px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .restriction-icon {
+            font-size: 60px;
+            color: #FF5722;
+            margin-bottom: 20px;
+        }
+
+        .restriction-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .restriction-message {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #aaaaaa;
+            line-height: 1.6;
+        }
+
+        .philippines-flag {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        #main-content {
+            display: none; /* Hidden by default until country is verified */
+        }
+
+        .loading-location {
+            text-align: center;
+            padding: 50px 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading screen while checking location -->
+    <div id="loading-location" class="loading-location">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Checking your location...</div>
+    </div>
+
+    <!-- Geo-restriction message (hidden by default) -->
+    <div id="geo-restriction" style="display: none;">
+        <div class="restriction-content">
+            <div class="restriction-icon">
+                <i class="fas fa-ban"></i>
+            </div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_the_Philippines.svg" alt="Philippines Flag" class="philippines-flag">
+            <h2 class="restriction-title">Access Restricted</h2>
+            <p class="restriction-message">
+                We're sorry, but this website is only available to users in the Philippines.
+                <br><br>
+                This content is region-restricted due to distribution agreements.
+            </p>
+        </div>
+    </div>
+
+    <!-- Main content (hidden by default until location is verified) -->
+    <div id="main-content">
+        <div id="particles-js"></div>
+
+        <div class="container">
+            <div class="header-section">
+                <h1 class="animate__animated animate__fadeInDown">Actions & Stuff</h1>
+                <p class="lead animate__animated animate__fadeIn animate__delay-1s">Your ultimate Minecraft addon experience, packed into one .mcpack file.</p>
+                <p class="animate__animated animate__fadeIn animate__delay-1s">The Actions & Stuff pack for Minecraft Bedrock offers detailed textures, realistic animations, and optimized performance.</p>
+            </div>
+
+            <!-- Stats Counter Section -->
+            <div class="stats-counter">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-eye"></i></div>
+                    <div class="stat-value" id="view-count">0</div>
+                    <div class="stat-label">Page Views</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-download"></i></div>
+                    <div class="stat-value" id="download-count">0</div>
+                    <div class="stat-label">Downloads</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                    <div class="stat-value" id="avg-rating">0.0</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+            </div>
+
+            <div class="version-info" id="version-info">
+                <div class="text-center">
+                    <div class="loading-spinner"></div>
+                    <p>Loading version info...</p>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="#" id="download-btn" class="btn download-btn animate__animated animate__bounceIn animate__delay-2s" style="display:none;">
+                    <i class="fas fa-download me-2"></i>Download
+                </a>
+                <a href="https://www.minecraft.net/en-us/marketplace/pdp?id=61c7a786-d7ad-49e0-a710-817121cd9795" class="btn marketplace-btn ms-2 animate__animated animate__bounceIn animate__delay-2s">
+                    <i class="fas fa-shopping-cart me-2"></i>Get Original on Marketplace
+                </a>
+            </div>
+
+            <div id="changelog" class="changelog" style="display:none;"></div>
+
+            <!-- Rating System -->
+            <div class="rating-container" id="rating-container">
+                <h3 class="rating-title">Rate This Addon</h3>
+                <div class="stars" id="rating-stars">
+                    <span class="star" data-rating="1"><i class="fas fa-star"></i></span>
+                    <span class="star" data-rating="2"><i class="fas fa-star"></i></span>
+                    <span class="star" data-rating="3"><i class="fas fa-star"></i></span>
+                    <span class="star" data-rating="4"><i class="fas fa-star"></i></span>
+                    <span class="star" data-rating="5"><i class="fas fa-star"></i></span>
+                </div>
+                <div class="rating-message" id="rating-message"></div>
+                <button class="rating-submit" id="submit-rating">Submit Rating</button>
+                <div class="already-rated" id="already-rated" style="display:none;">
+                    You've already rated this addon. Thank you for your feedback!
+                </div>
+                <div class="rating-stats">
+                    <span id="total-ratings">0</span> ratings submitted
+                </div>
+            </div>
+
+            <h2 class="section-title animate__animated animate__fadeIn">Featured Characteristics</h2>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>Realistic Animations</h3>
+                        <p>Explore Minecraft Bedrock with our Detailed Textures pack and discover how each block comes to life with new levels of realism.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>Detailed Textures</h3>
+                        <p>Transform your Minecraft Bedrock experience with the Optimized Performance pack. Enjoy fluid gameplay without compromising on details.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>Optimized Performance</h3>
+                        <p>Immerse yourself in the world of Minecraft Bedrock with perfectly optimized realistic animations, elevating your immersion level to the maximum.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title animate__animated animate__fadeIn">🎮 What's Inside Actions & Stuff</h2>
+            <div class="row">
+                <div class="col-12">
+                    <div class="feature-item">
+                        <h4>Realistic Player Animations</h4>
+                        <p>Enhanced first- and third-person animations for actions like walking, jumping, and attacking.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h4>Improved Mob Animations</h4>
+                        <p>New and improved animations for various mobs, adding more life to the game.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h4>3D Item Models</h4>
+                        <p>Items now have three-dimensional models, providing a more immersive visual experience.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h4>Custom Armor</h4>
+                        <p>Unique armor designs that differ from the standard Minecraft armor sets.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h4>Complete Texture Overhaul</h4>
+                        <p>A comprehensive and faithful revamp of textures, enhancing the game's visual fidelity.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h4>Compatibility with Vanilla and Custom Texture Packs</h4>
+                        <p>Designed to work seamlessly with the default textures or your own custom packs.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h4>Optimized Performance</h4>
+                        <p>Despite the visual enhancements, the add-on is optimized to ensure smooth gameplay.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="thank-you">
+                <h3>Thanks for downloading ActionNStuff!</h3>
+                <p>We hope you enjoy the enhanced Minecraft experience.</p>
+            </div>
+
+            <h2 class="section-title animate__animated animate__fadeIn">Official Trailer</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/VDk8niB2Obw" title="ActionNStuff Showcase" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div class="note-section">
+                <h3>Note</h3>
+                <p>⚠️ Disclaimer & Copyright Notice
+                This website is not the official page of the Actions & Stuff creator.
+                It is an independent fan-hosted platform created for the purpose of sharing updates and download access for the Actions & Stuff add-on.
+
+                All rights to the content, including textures, models, and concepts, belong to their respective creators. This site does not claim ownership of the Actions & Stuff add-on.
+
+                We do not create or modify the original pack.
+                We simply host the files for easy access and update tracking.
+
+                This project is part of a community-driven effort and is not affiliated with Mojang, Microsoft, or the official Minecraft Marketplace. Any credits belong to the original developers and artists.</p>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+    // Check user's country on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        checkUserCountry();
+    });
+
+    // Function to check user's country
+    function checkUserCountry() {
+        // Use ipapi.co to get user's country (free API with no key required)
+        fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading screen
+                document.getElementById('loading-location').style.display = 'none';
+
+                // Check if user is from Philippines (country code: PH)
+                if (data.country_code === 'PH') {
+                    // User is from Philippines, show content
+                    document.getElementById('main-content').style.display = 'block';
+
+                    // Initialize the rest of the site
+                    initializeSite();
+                } else {
+                    // User is not from Philippines, show restriction message
+                    document.getElementById('geo-restriction').style.display = 'flex';
+
+                    // Log for debugging
+                    console.log('Access restricted. User country: ' + data.country_name);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking location:', error);
+
+                // In case of error, default to showing the restriction
+                document.getElementById('loading-location').style.display = 'none';
+                document.getElementById('geo-restriction').style.display = 'flex';
+            });
+    }
+
+    // Initialize the site functionality
+    function initializeSite() {
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#00E676"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#00E676",
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Generate a unique browser fingerprint
+        function generateBrowserFingerprint() {
+            const userAgent = navigator.userAgent;
+            const screenWidth = window.screen.width;
+            const screenHeight = window.screen.height;
+            const colorDepth = window.screen.colorDepth;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const language = navigator.language;
+
+            // Combine these values to create a unique fingerprint
+            const fingerprint = `${userAgent}-${screenWidth}x${screenHeight}-${colorDepth}-${timezone}-${language}`;
+
+            // Hash the fingerprint for privacy
+            let hash = 0;
+            for (let i = 0; i < fingerprint.length; i++) {
+                const char = fingerprint.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+
+            return 'browser_' + Math.abs(hash).toString(16);
+        }
+
+        // Get or create browser fingerprint
+        const browserFingerprint = generateBrowserFingerprint();
+
+        // Check if this browser has already viewed the page
+        const hasViewed = localStorage.getItem('actionNStuffViewed_' + browserFingerprint);
+
+        if (!hasViewed) {
+            // This is a new view, increment the counter
+            incrementViewCount();
+            // Mark this browser as having viewed the page
+            localStorage.setItem('actionNStuffViewed_' + browserFingerprint, 'true');
+        }
+
+        // Display current stats
+        displayStats();
+
+        // Check if user has already rated
+        checkIfUserHasRated();
+
+        // Function to increment view count
+        function incrementViewCount() {
+            // Get current view count from localStorage or initialize to 0
+            let viewCount = localStorage.getItem('actionNStuffViews') || 0;
+            viewCount = parseInt(viewCount) + 1;
+
+            // Save updated count to localStorage
+            localStorage.setItem('actionNStuffViews', viewCount);
+
+            // Update the view count display
+            document.getElementById('view-count').textContent = viewCount;
+
+            // In a real implementation, you would also send this to a server with the browser fingerprint
+            // Example: fetch('/api/increment-views', { 
+            //   method: 'POST',
+            //   headers: { 'Content-Type': 'application/json' },
+            //   body: JSON.stringify({ fingerprint: browserFingerprint })
+            // });
+        }
+
+        // Function to track downloads
+        function trackDownload() {
+            // Get current download count from localStorage or initialize to 0
+            let downloadCount = localStorage.getItem('actionNStuffDownloads') || 0;
+
+            // Check if this browser has already downloaded
+            const hasDownloaded = localStorage.getItem('actionNStuffDownloaded_' + browserFingerprint);
+
+            if (!hasDownloaded) {
+                // This is a new download from this browser
+                downloadCount = parseInt(downloadCount) + 1;
+
+                // Save updated count to localStorage
+                localStorage.setItem('actionNStuffDownloads', downloadCount);
+
+                // Mark this browser as having downloaded
+                localStorage.setItem('actionNStuffDownloaded_' + browserFingerprint, 'true');
+
+                // In a real implementation, you would also send this to a server
+                // Example: fetch('/api/increment-downloads', { 
+                //   method: 'POST',
+                //   headers: { 'Content-Type': 'application/json' },
+                //   body: JSON.stringify({ fingerprint: browserFingerprint })
+                // });
+            }
+
+            // Update the download count display
+            document.getElementById('download-count').textContent = downloadCount;
+        }
+
+        // Function to display current stats
+        function displayStats() {
+            // Get stats from localStorage
+            const viewCount = localStorage.getItem('actionNStuffViews') || 0;
+            const downloadCount = localStorage.getItem('actionNStuffDownloads') || 0;
+            const ratings = JSON.parse(localStorage.getItem('actionNStuffRatings')) || [];
+
+            // Calculate average rating
+            let avgRating = 0;
+            if (ratings.length > 0) {
+                const sum = ratings.reduce((total, rating) => total + rating.value, 0);
+                avgRating = (sum / ratings.length).toFixed(1);
+            }
+
+            // Update the displays
+            document.getElementById('view-count').textContent = viewCount;
+            document.getElementById('download-count').textContent = downloadCount;
+            document.getElementById('avg-rating').textContent = avgRating;
+            document.getElementById('total-ratings').textContent = ratings.length;
+        }
+
+        // Check if user has already rated
+        function checkIfUserHasRated() {
+            const ratings = JSON.parse(localStorage.getItem('actionNStuffRatings')) || [];
+            const hasRated = ratings.some(rating => rating.fingerprint === browserFingerprint);
+
+            if (hasRated) {
+                // User has already rated, show message and disable rating
+                document.getElementById('rating-stars').style.pointerEvents = 'none';
+                document.getElementById('already-rated').style.display = 'block';
+
+                // Find user's rating and highlight those stars
+                const userRating = ratings.find(rating => rating.fingerprint === browserFingerprint);
+                if (userRating) {
+                    const stars = document.querySelectorAll('.star');
+                    stars.forEach(star => {
+                        const starRating = parseInt(star.getAttribute('data-rating'));
+                        if (starRating <= userRating.value) {
+                            star.classList.add('active');
+                        }
+                    });
+                }
+            }
+        }
+
+        // Rating system functionality
+        const stars = document.querySelectorAll('.star');
+        const ratingMessage = document.getElementById('rating-message');
+        const submitButton = document.getElementById('submit-rating');
+        let selectedRating = 0;
+
+        // Check if user has already rated
+        const ratings = JSON.parse(localStorage.getItem('actionNStuffRatings')) || [];
+        const hasRated = ratings.some(rating => rating.fingerprint === browserFingerprint);
+
+        if (!hasRated) {
+            // Add event listeners to stars
+            stars.forEach(star => {
+                star.addEventListener('mouseover', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    highlightStars(rating);
+                    showRatingMessage(rating);
+                });
+
+                star.addEventListener('mouseout', function() {
+                    if (selectedRating === 0) {
+                        resetStars();
+                        ratingMessage.textContent = '';
+                    } else {
+                        highlightStars(selectedRating);
+                        showRatingMessage(selectedRating);
+                    }
+                });
+
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.getAttribute('data-rating'));
+                    highlightStars(selectedRating);
+                    showRatingMessage(selectedRating);
+                    submitButton.style.display = 'inline-block';
+                });
+            });
+
+            // Submit rating button
+            submitButton.addEventListener('click', function() {
+                if (selectedRating > 0) {
+                    submitRating(selectedRating);
+                    submitButton.style.display = 'none';
+                    ratingMessage.textContent = 'Thanks for your rating!';
+
+                    // Disable further rating
+                    document.getElementById('rating-stars').style.pointerEvents = 'none';
+                    document.getElementById('already-rated').style.display = 'block';
+
+                    setTimeout(() => {
+                        ratingMessage.textContent = '';
+                    }, 3000);
+                }
+            });
+        }
+
+        // Function to highlight stars
+        function highlightStars(rating) {
+            stars.forEach(star => {
+                const starRating = parseInt(star.getAttribute('data-rating'));
+                if (starRating <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        // Function to reset stars
+        function resetStars() {
+            stars.forEach(star => {
+                star.classList.remove('active');
+            });
+        }
+
+        // Function to show rating message
+        function showRatingMessage(rating) {
+            const messages = [
+                '',
+                'Poor',
+                'Fair',
+                'Good',
+                'Very Good',
+                'Excellent'
+            ];
+            ratingMessage.textContent = messages[rating];
+        }
+
+        // Function to submit rating
+        function submitRating(rating) {
+            // Get current ratings from localStorage
+            let ratings = JSON.parse(localStorage.getItem('actionNStuffRatings')) || [];
+
+            // Add new rating with browser fingerprint
+            ratings.push({
+                value: rating,
+                fingerprint: browserFingerprint,
+                timestamp: new Date().toISOString()
+            });
+
+            // Save updated ratings to localStorage
+            localStorage.setItem('actionNStuffRatings', JSON.stringify(ratings));
+
+            // Update stats display
+            displayStats();
+
+            // In a real implementation, you would also send this to a server
+            // Example: fetch('/api/submit-rating', { 
+            //   method: 'POST',
+            //   headers: { 'Content-Type': 'application/json' },
+            //   body: JSON.stringify({ 
+            //     rating,
+            //     fingerprint: browserFingerprint
+            //   })
+            // });
+        }
+
+        // Original fetch function for version info with download tracking
+        fetch('/api/latest')
+            .then(res => res.json())
+            .then(data => {
+                const info = document.getElementById('version-info');
+                const btn = document.getElementById('download-btn');
+                const changelog = document.getElementById('changelog');
+
+                if (data.error) {
+                    info.innerHTML = '<div class="alert alert-warning">No version available at this time.</div>';
+                    return;
+                }
+
+                info.innerHTML = `
+                    <div class="text-center">
+                        <h3>Latest Version</h3>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div><strong>Version:</strong></div>
+                            <div>${data.version}</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div><strong>Last Updated:</strong></div>
+                            <div>${data.updateDate}</div>
+                        </div>
+                    </div>
+                `;
+
+                btn.href = data.downloadUrl;
+                btn.innerHTML = `<i class="fas fa-download me-2"></i>Download ActionNStuff ${data.version} (.mcpack)`;
+                btn.style.display = 'inline-block';
+
+                // Add download tracking to the download button
+                btn.addEventListener('click', function(e) {
+                    trackDownload();
+                    // Continue with the download (don't prevent default)
+                });
+
+                if (data.changelog && data.changelog.trim()) {
+                    const changelogTitle = document.createElement('h4');
+                    changelogTitle.textContent = 'Changelog';
+                    changelogTitle.className = 'mb-3';
+
+                    changelog.innerHTML = '';
+                    changelog.appendChild(changelogTitle);
+
+                    const changelogContent = document.createElement('div');
+                    changelogContent.textContent = data.changelog;
+                    changelog.appendChild(changelogContent);
+
+                    changelog.style.display = 'block';
+                }
+            })
+            .catch(err => {
+                document.getElementById('version-info').innerHTML = '<div class="alert alert-danger">Failed to load version info. Please try again later.</div>';
+                console.error(err);
+            });
+
+        // Add scroll reveal animations
+        const animateElements = document.querySelectorAll('.feature-card, .feature-item, .section-title');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+</script>
+</body>
+</html>
