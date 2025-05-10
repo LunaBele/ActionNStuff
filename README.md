@@ -1,70 +1,63 @@
 # 🎮 Actions & Stuff – Minecraft Bedrock Add-On
 
-![Actions & Stuff Banner](https://www.minecraft.net/content/dam/minecraft/pmp/marketplace/2025/may/actions-and-stuff/actions-and-stuff-hero.jpg)
+[![Watch the Trailer](https://img.youtube.com/vi/VDk8niB2Obw/maxresdefault.jpg)](https://youtu.be/VDk8niB2Obw?si=gnlwKhU_VqETD96B)
 
-**Actions & Stuff** is a community-driven add-on designed to enhance your Minecraft Bedrock Edition experience with improved animations, textures, and immersive features.
+**Actions & Stuff** is a powerful Minecraft Bedrock add-on packed with animations, immersive visuals, and new gameplay mechanics that supercharge your world. It’s a community favorite for a reason — and now easier to install than ever.
 
-> 🔗 **Official Marketplace Link**: [Actions & Stuff by Oreville Studios](https://www.minecraft.net/en-us/marketplace/pdp?id=61c7a786-d7ad-49e0-a710-817121cd9795)
+> 🔗 **Official Marketplace Download**: [Actions & Stuff by Oreville Studios](https://www.minecraft.net/en-us/marketplace/pdp/oreville-studios/actions--stuff-1.4/61c7a786-d7ad-49e0-a710-817121cd9795)
 
 ---
 
 ## ✨ Features
 
-- **🎭 Realistic Player Animations**: Enhanced animations for actions like walking, jumping, and attacking.
-- **🧸 Improved Mob Animations**: New and improved animations for various mobs.
-- **🗡️ 3D Item Models**: Items now have three-dimensional models for a more immersive experience.
-- **🛡️ Custom Armor**: Unique armor designs that differ from standard sets.
-- **🎨 Complete Texture Overhaul**: Comprehensive and faithful revamp of textures.
-- **🎮 Compatibility with Vanilla and Custom Texture Packs**: Seamless integration with default and custom textures.
-- **⚙️ Optimized Performance**: Ensures smooth gameplay across devices.
+- **🎭 Realistic Player Animations** – Run, jump, and swing with smoother and more lifelike motion.
+- **🧸 Enhanced Mob Behaviors** – Baby mobs now feature animations and smart behaviors.
+- **🗡️ Custom 3D Items** – Items feature new models for visual depth.
+- **🛡️ Unique Armor & Gear** – Dive into combat with stylized custom armor sets.
+- **⚙️ Redstone-Compatible Gadgets** – Includes tech-like blocks that react to redstone.
+- **🎮 Plug-and-Play Ready** – Optimized for Bedrock Edition with minimal setup.
+- **💨 Performance Tweaks** – Improved framerate and stability across devices.
 
 ---
 
-## 📥 Installation Guide
+## 📥 How to Install (Bedrock Edition)
 
-### For Windows 10/11:
-
-1. Download the `.mcpack` file.
-2. Double-click the file; Minecraft should launch and import the pack automatically.
-3. Once imported, go to `Settings` > `Global Resources` and activate the pack.
-
-### For Android:
-
-1. Download the `.mcpack` file to your device.
-2. Use a file manager to locate the file.
-3. Tap on the file; Minecraft should open and import the pack.
-4. Activate the pack in `Settings` > `Global Resources`.
-
-### For iOS:
+### Windows 10/11
 
 1. Download the `.mcpack` file.
-2. Tap on the file; choose to open it with Minecraft.
-3. Minecraft will launch and import the pack.
-4. Activate the pack in `Settings` > `Global Resources`.
+2. Double-click it. Minecraft will open and install the add-on.
+3. Go to `Settings > Global Resources` and activate the pack.
 
-### For Consoles:
+### Android
 
-Direct installation of add-ons is not supported on consoles. To use this add-on:
+1. Download the `.mcpack` file.
+2. Use a file manager to open it.
+3. Minecraft will launch and import it.
+4. Activate the pack in `Settings > Global Resources`.
 
-1. Install the pack on a Windows 10/11 or mobile device.
-2. Create a new world with the add-on activated.
-3. Upload the world to your Minecraft Realm.
-4. Access the Realm on your console to play with the add-on.
+### iOS
+
+1. Download the `.mcpack` file.
+2. Tap and “Open in Minecraft.”
+3. The game will import and install the pack.
+
+### Console (Xbox/PlayStation/Switch)
+
+1. Import the add-on using a Windows/Android/iOS device.
+2. Create a world with the pack enabled.
+3. Upload the world to your Realm.
+4. Join the Realm from your console.
 
 ---
 
 ## ⚠️ Disclaimer
 
-This website is **not the official page of the Actions & Stuff creator**.  
-It is an independent fan-hosted platform created to share updates and provide download access for the *Actions & Stuff* add-on.
+This page is **not affiliated with the official developers** of Actions & Stuff.  
+It is a **fan-maintained platform** for easier access and file distribution of publicly available add-ons.
 
-All rights to the content, including textures, models, and concepts, belong to their respective creators. This site does **not claim ownership** of the *Actions & Stuff* add-on.
+All rights to the content, branding, and assets belong to their respective owners, including **Oreville Studios** and **Minecraft/Mojang**.
 
-> **We do not create or modify the original pack**.  
-> We simply host the files for easy access and update tracking.
+> ⚠️ **We do not create or edit the original DLC.**  
+> This repository exists to support the community with clean file hosting, changelogs, and update notices.
 
-This project is part of a **community-driven effort** and is not affiliated with Mojang, Microsoft, or the official Minecraft Marketplace. Any credits belong to the original developers and artists.
-
----
-
-![Minecraft Marketplace](https://www.minecraft.net/en-us/marketplace/pdp/oreville-studios/actions--stuff-1.4/61c7a786-d7ad-49e0-a710-817121cd9795)
+Minecraft® is a trademark of Mojang Studios. This is a community-hosted resource and is **not** part of the official Minecraft Marketplace.
