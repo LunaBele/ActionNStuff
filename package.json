@@ -12,6 +12,8 @@
   "dependencies": {
     "@types/node": "^22.13.11",
     "express": "^5.1.0",
-    "multer": "^1.4.5-lts.2"
+    "md5": "^2.3.0",
+    "multer": "^1.4.5-lts.2",
+    "ws": "^8.18.2"
   }
 }

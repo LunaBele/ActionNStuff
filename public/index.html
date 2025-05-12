@@ -657,9 +657,72 @@
             font-size: 18px;
             color: var(--text-color);
         }
+
+        /* Site Loading Animation */
+        #site-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-spinner {
+            width: 80px;
+            height: 80px;
+            border: 5px solid rgba(0, 230, 118, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .loader-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+        }
+
+        .loader-progress {
+            width: 200px;
+            height: 4px;
+            background-color: #333;
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loader-progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease-out;
+        }
     </style>
 </head>
 <body>
+    <!-- Site Loader -->
+    <div id="site-loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">LOADING ACTIONSTUFF</div>
+            <div class="loader-progress">
+                <div class="loader-progress-bar" id="loader-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading screen while checking location -->
     <div id="loading-location" class="loading-location">
         <div class="loading-spinner"></div>
@@ -839,484 +902,666 @@
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script>
-    // Check user's country on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        checkUserCountry();
-    });
+                                            <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+                                            <script>
+                                                // Global variables
+                                                let siteInitialized = false;
+                                                let userIP = '';
+                                                let databaseLoaded = false;
 
-    // Function to check user's country
-    function checkUserCountry() {
-        // Use ipapi.co to get user's country (free API with no key required)
-        fetch('https://ipapi.co/json/')
-            .then(response => response.json())
-            .then(data => {
-                // Hide loading screen
-                document.getElementById('loading-location').style.display = 'none';
+                                                // Database operations
+                                                const database = {
+                                                    data: null,
 
-                // Check if user is from Philippines (country code: PH)
-                if (data.country_code === 'PH') {
-                    // User is from Philippines, show content
-                    document.getElementById('main-content').style.display = 'block';
+                                                    // Load database from file
+                                                    async load() {
+                                                        try {
+                                                            const response = await fetch('/storage/database.json');
+                                                            if (response.ok) {
+                                                                let data = await response.json();
 
-                    // Initialize the rest of the site
-                    initializeSite();
-                } else {
-                    // User is not from Philippines, show restriction message
-                    document.getElementById('geo-restriction').style.display = 'flex';
+                                                                // Initialize database structure if it's empty
+                                                                if (Array.isArray(data) && data.length === 0) {
+                                                                    data = {
+                                                                        views: 0,
+                                                                        downloads: 0,
+                                                                        ratings: [],
+                                                                        viewedIPs: []
+                                                                    };
+                                                                } else if (!data.viewedIPs) {
+                                                                    // Add viewedIPs array if it doesn't exist
+                                                                    data.viewedIPs = [];
+                                                                }
 
-                    // Log for debugging
-                    console.log('Access restricted. User country: ' + data.country_name);
-                }
-            })
-            .catch(error => {
-                console.error('Error checking location:', error);
+                                                                this.data = data;
+                                                            } else {
+                                                                // Initialize empty database if file doesn't exist or can't be loaded
+                                                                this.data = {
+                                                                    views: 0,
+                                                                    downloads: 0,
+                                                                    ratings: [],
+                                                                    viewedIPs: []
+                                                                };
+                                                            }
 
-                // In case of error, default to showing the restriction
-                document.getElementById('loading-location').style.display = 'none';
-                document.getElementById('geo-restriction').style.display = 'flex';
-            });
-    }
+                                                            databaseLoaded = true;
+                                                            return this.data;
+                                                        } catch (error) {
+                                                            console.error('Error loading database:', error);
+                                                            // Initialize empty database on error
+                                                            this.data = {
+                                                                views: 0,
+                                                                downloads: 0,
+                                                                ratings: [],
+                                                                viewedIPs: []
+                                                            };
 
-    // Initialize the site functionality
-    function initializeSite() {
-        // Initialize particles.js
-        particlesJS('particles-js', {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {
-                    "value": "#00E676"
-                },
-                "shape": {
-                    "type": "circle",
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
-                    }
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false,
-                    "anim": {
-                        "enable": false,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "size": {
-                    "value": 3,
-                    "random": true,
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#00E676",
-                    "opacity": 0.2,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 2,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false,
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
-                    }
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "grab"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": {
-                        "distance": 140,
-                        "line_linked": {
-                            "opacity": 1
-                        }
-                    },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
-                    },
-                    "repulse": {
-                        "distance": 200,
-                        "duration": 0.4
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
-                    }
-                }
-            },
-            "retina_detect": true
-        });
+                                                            databaseLoaded = true;
+                                                            return this.data;
+                                                        }
+                                                    },
 
-        // Generate a unique browser fingerprint
-        function generateBrowserFingerprint() {
-            const userAgent = navigator.userAgent;
-            const screenWidth = window.screen.width;
-            const screenHeight = window.screen.height;
-            const colorDepth = window.screen.colorDepth;
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const language = navigator.language;
+                                                    // Save database to file
+                                                    async save() {
+                                                        try {
+                                                            const response = await fetch('/storage/database.json', {
+                                                                method: 'POST',
+                                                                headers: {
+                                                                    'Content-Type': 'application/json'
+                                                                },
+                                                                body: JSON.stringify(this.data)
+                                                            });
+                                                            if (response.ok) {
+                                                                const result = await response.json();
+                                                                if (result.success) {
+                                                                    console.log('Database saved successfully');
+                                                                    return true;
+                                                                } else {
+                                                                    console.error('Failed to save database:', result.message);
+                                                                    return false;
+                                                                }
+                                                            } else {
+                                                                console.error('Failed to save database: Server responded with status', response.status);
+                                                                return false;
+                                                            }
+                                                        } catch (error) {
+                                                            console.error('Error saving database:', error);
+                                                            return false;
+                                                        }
+                                                    },
 
-            // Combine these values to create a unique fingerprint
-            const fingerprint = `${userAgent}-${screenWidth}x${screenHeight}-${colorDepth}-${timezone}-${language}`;
+                                                    // Increment view count if IP is not already in the list
+                                                    async incrementViews(ip) {
+                                                        if (!this.data) await this.load();
 
-            // Hash the fingerprint for privacy
-            let hash = 0;
-            for (let i = 0; i < fingerprint.length; i++) {
-                const char = fingerprint.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; // Convert to 32bit integer
-            }
+                                                        // Check if this IP has already viewed the page
+                                                        if (!this.data.viewedIPs.includes(ip)) {
+                                                            this.data.views = (this.data.views || 0) + 1;
+                                                            this.data.viewedIPs.push(ip);
+                                                            const saved = await this.save();
+                                                            if (!saved) {
+                                                                console.error('Failed to increment views: Database save failed');
+                                                            }
+                                                            return saved;
+                                                        }
 
-            return 'browser_' + Math.abs(hash).toString(16);
-        }
+                                                        return false;
+                                                    },
 
-        // Get or create browser fingerprint
-        const browserFingerprint = generateBrowserFingerprint();
+                                                    // Increment download count
+                                                    async incrementDownloads() {
+                                                        if (!this.data) await this.load();
+                                                        this.data.downloads = (this.data.downloads || 0) + 1;
+                                                        const saved = await this.save();
+                                                        if (!saved) {
+                                                            console.error('Failed to increment downloads: Database save failed');
+                                                        }
+                                                        return saved;
+                                                    },
 
-        // Check if this browser has already viewed the page
-        const hasViewed = localStorage.getItem('actionNStuffViewed_' + browserFingerprint);
+                                                    // Add a rating
+                                                    async addRating(fingerprint, rating) {
+                                                        if (!this.data) await this.load();
+                                                        if (!this.data.ratings) this.data.ratings = [];
 
-        if (!hasViewed) {
-            // This is a new view, increment the counter
-            incrementViewCount();
-            // Mark this browser as having viewed the page
-            localStorage.setItem('actionNStuffViewed_' + browserFingerprint, 'true');
-        }
+                                                        // Check if user already rated
+                                                        const existingRatingIndex = this.data.ratings.findIndex(r => r.fingerprint === fingerprint);
 
-        // Display current stats
-        displayStats();
+                                                        if (existingRatingIndex >= 0) {
+                                                            // Update existing rating
+                                                            this.data.ratings[existingRatingIndex].value = rating;
+                                                            this.data.ratings[existingRatingIndex].timestamp = new Date().toISOString();
+                                                        } else {
+                                                            // Add new rating
+                                                            this.data.ratings.push({
+                                                                fingerprint,
+                                                                value: rating,
+                                                                timestamp: new Date().toISOString()
+                                                            });
+                                                        }
 
-        // Check if user has already rated
-        checkIfUserHasRated();
+                                                        const saved = await this.save();
+                                                        if (!saved) {
+                                                            console.error('Failed to add rating: Database save failed');
+                                                            return false;
+                                                        }
+                                                        return true;
+                                                    },
 
-        // Function to increment view count
-        function incrementViewCount() {
-            // Get current view count from localStorage or initialize to 0
-            let viewCount = localStorage.getItem('actionNStuffViews') || 0;
-            viewCount = parseInt(viewCount) + 1;
+                                                    // Get average rating
+                                                    getAverageRating() {
+                                                        if (!this.data || !this.data.ratings || this.data.ratings.length === 0) return 0;
 
-            // Save updated count to localStorage
-            localStorage.setItem('actionNStuffViews', viewCount);
+                                                        const sum = this.data.ratings.reduce((total, rating) => total + rating.value, 0);
+                                                        return (sum / this.data.ratings.length).toFixed(1);
+                                                    },
 
-            // Update the view count display
-            document.getElementById('view-count').textContent = viewCount;
+                                                    // Check if user has already rated
+                                                    hasUserRated(fingerprint) {
+                                                        if (!this.data || !this.data.ratings) return false;
+                                                        return this.data.ratings.some(rating => rating.fingerprint === fingerprint);
+                                                    },
 
-            // In a real implementation, you would also send this to a server with the browser fingerprint
-            // Example: fetch('/api/increment-views', { 
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify({ fingerprint: browserFingerprint })
-            // });
-        }
+                                                    // Get user's rating
+                                                    getUserRating(fingerprint) {
+                                                        if (!this.data || !this.data.ratings) return null;
+                                                        const rating = this.data.ratings.find(r => r.fingerprint === fingerprint);
+                                                        return rating ? rating.value : null;
+                                                    }
+                                                };
 
-        // Function to track downloads
-        function trackDownload() {
-            // Get current download count from localStorage or initialize to 0
-            let downloadCount = localStorage.getItem('actionNStuffDownloads') || 0;
+                                                // Get user's IP address
+                                                async function getUserIP() {
+                                                    try {
+                                                        const response = await fetch('https://api.ipify.org?format=json');
+                                                        const data = await response.json();
+                                                        userIP = data.ip;
+                                                        return userIP;
+                                                    } catch (error) {
+                                                        console.error('Error getting IP:', error);
+                                                        // Generate a fallback unique ID if IP can't be determined
+                                                        userIP = 'unknown_' + new Date().getTime() + '_' + Math.random().toString(36).substring(2, 15);
+                                                        return userIP;
+                                                    }
+                                                }
 
-            // Check if this browser has already downloaded
-            const hasDownloaded = localStorage.getItem('actionNStuffDownloaded_' + browserFingerprint);
+                                                // Site loader animation
+                                                function initSiteLoader() {
+                                                    const progressBar = document.getElementById('loader-progress-bar');
+                                                    let progress = 0;
 
-            if (!hasDownloaded) {
-                // This is a new download from this browser
-                downloadCount = parseInt(downloadCount) + 1;
+                                                    // Simulate loading progress
+                                                    const interval = setInterval(() => {
+                                                        progress += Math.random() * 10;
+                                                        if (progress > 100) progress = 100;
 
-                // Save updated count to localStorage
-                localStorage.setItem('actionNStuffDownloads', downloadCount);
+                                                        progressBar.style.width = progress + "%";
 
-                // Mark this browser as having downloaded
-                localStorage.setItem('actionNStuffDownloaded_' + browserFingerprint, 'true');
+                                                        if (progress >= 100) {
+                                                            clearInterval(interval);
+                                                            setTimeout(() => {
+                                                                document.getElementById('site-loader').style.opacity = '0';
+                                                                setTimeout(() => {
+                                                                    document.getElementById('site-loader').style.display = 'none';
 
-                // In a real implementation, you would also send this to a server
-                // Example: fetch('/api/increment-downloads', { 
-                //   method: 'POST',
-                //   headers: { 'Content-Type': 'application/json' },
-                //   body: JSON.stringify({ fingerprint: browserFingerprint })
-                // });
-            }
+                                                                    // If site is not yet initialized but location check is complete, initialize it now
+                                                                    if (!siteInitialized && document.getElementById('main-content').style.display === 'block') {
+                                                                        initializeSite();
+                                                                    }
+                                                                }, 500);
+                                                            }, 500);
+                                                        }
+                                                    }, 200);
+                                                }
 
-            // Update the download count display
-            document.getElementById('download-count').textContent = downloadCount;
-        }
+                                                // Check user's country on page load
+                                                document.addEventListener('DOMContentLoaded', async function() {
+                                                    // Start site loader
+                                                    initSiteLoader();
 
-        // Function to display current stats
-        function displayStats() {
-            // Get stats from localStorage
-            const viewCount = localStorage.getItem('actionNStuffViews') || 0;
-            const downloadCount = localStorage.getItem('actionNStuffDownloads') || 0;
-            const ratings = JSON.parse(localStorage.getItem('actionNStuffRatings')) || [];
+                                                    // Get user IP first
+                                                    await getUserIP();
 
-            // Calculate average rating
-            let avgRating = 0;
-            if (ratings.length > 0) {
-                const sum = ratings.reduce((total, rating) => total + rating.value, 0);
-                avgRating = (sum / ratings.length).toFixed(1);
-            }
+                                                    // Load database
+                                                    await database.load();
 
-            // Update the displays
-            document.getElementById('view-count').textContent = viewCount;
-            document.getElementById('download-count').textContent = downloadCount;
-            document.getElementById('avg-rating').textContent = avgRating;
-            document.getElementById('total-ratings').textContent = ratings.length;
-        }
+                                                    // Check user's country after a delay to ensure loader is visible
+                                                    setTimeout(() => {
+                                                        checkUserCountry();
+                                                    }, 1500);
+                                                });
 
-        // Check if user has already rated
-        function checkIfUserHasRated() {
-            const ratings = JSON.parse(localStorage.getItem('actionNStuffRatings')) || [];
-            const hasRated = ratings.some(rating => rating.fingerprint === browserFingerprint);
+                                                // Function to check user's country
+                                                function checkUserCountry() {
+                                                    // Use ipapi.co to get user's country (free API with no key required)
+                                                    fetch('https://ipapi.co/json/')
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            // Hide loading screen
+                                                            document.getElementById('loading-location').style.display = 'none';
 
-            if (hasRated) {
-                // User has already rated, show message and disable rating
-                document.getElementById('rating-stars').style.pointerEvents = 'none';
-                document.getElementById('already-rated').style.display = 'block';
+                                                            // Check if user is from Philippines (country code: PH)
+                                                            if (data.country_code === 'PH') {
+                                                                // User is from Philippines, show content
+                                                                document.getElementById('main-content').style.display = 'block';
 
-                // Find user's rating and highlight those stars
-                const userRating = ratings.find(rating => rating.fingerprint === browserFingerprint);
-                if (userRating) {
-                    const stars = document.querySelectorAll('.star');
-                    stars.forEach(star => {
-                        const starRating = parseInt(star.getAttribute('data-rating'));
-                        if (starRating <= userRating.value) {
-                            star.classList.add('active');
-                        }
-                    });
-                }
-            }
-        }
+                                                                // Initialize the site if the loader has finished
+                                                                if (document.getElementById('site-loader').style.display === 'none') {
+                                                                    initializeSite();
+                                                                }
+                                                            } else {
+                                                                // User is not from Philippines, show restriction message
+                                                                document.getElementById('geo-restriction').style.display = 'flex';
 
-        // Rating system functionality
-        const stars = document.querySelectorAll('.star');
-        const ratingMessage = document.getElementById('rating-message');
-        const submitButton = document.getElementById('submit-rating');
-        let selectedRating = 0;
+                                                                // Log for debugging
+                                                                console.log('Access restricted. User country: ' + data.country_name);
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Error checking location:', error);
 
-        // Check if user has already rated
-        const ratings = JSON.parse(localStorage.getItem('actionNStuffRatings')) || [];
-        const hasRated = ratings.some(rating => rating.fingerprint === browserFingerprint);
+                                                            // In case of error, default to showing the restriction
+                                                            document.getElementById('loading-location').style.display = 'none';
+                                                            document.getElementById('geo-restriction').style.display = 'flex';
+                                                        });
+                                                }
 
-        if (!hasRated) {
-            // Add event listeners to stars
-            stars.forEach(star => {
-                star.addEventListener('mouseover', function() {
-                    const rating = parseInt(this.getAttribute('data-rating'));
-                    highlightStars(rating);
-                    showRatingMessage(rating);
-                });
+                                                // Initialize the site functionality
+                                                async function initializeSite() {
+                                                    // Prevent multiple initializations
+                                                    if (siteInitialized) return;
+                                                    siteInitialized = true;
 
-                star.addEventListener('mouseout', function() {
-                    if (selectedRating === 0) {
-                        resetStars();
-                        ratingMessage.textContent = '';
-                    } else {
-                        highlightStars(selectedRating);
-                        showRatingMessage(selectedRating);
-                    }
-                });
+                                                    // Make sure database is loaded
+                                                    if (!databaseLoaded) {
+                                                        await database.load();
+                                                    }
 
-                star.addEventListener('click', function() {
-                    selectedRating = parseInt(this.getAttribute('data-rating'));
-                    highlightStars(selectedRating);
-                    showRatingMessage(selectedRating);
-                    submitButton.style.display = 'inline-block';
-                });
-            });
+                                                    // Increment view count if this IP hasn't viewed before
+                                                    await database.incrementViews(userIP);
 
-            // Submit rating button
-            submitButton.addEventListener('click', function() {
-                if (selectedRating > 0) {
-                    submitRating(selectedRating);
-                    submitButton.style.display = 'none';
-                    ratingMessage.textContent = 'Thanks for your rating!';
+                                                    // Initialize particles.js
+                                                    if (window.particlesJS) {
+                                                        particlesJS('particles-js', {
+                                                            "particles": {
+                                                                "number": {
+                                                                    "value": 80,
+                                                                    "density": {
+                                                                        "enable": true,
+                                                                        "value_area": 800
+                                                                    }
+                                                                },
+                                                                "color": {
+                                                                    "value": "#00E676"
+                                                                },
+                                                                "shape": {
+                                                                    "type": "circle",
+                                                                    "stroke": {
+                                                                        "width": 0,
+                                                                        "color": "#000000"
+                                                                    },
+                                                                    "polygon": {
+                                                                        "nb_sides": 5
+                                                                    }
+                                                                },
+                                                                "opacity": {
+                                                                    "value": 0.5,
+                                                                    "random": false,
+                                                                    "anim": {
+                                                                        "enable": false,
+                                                                        "speed": 1,
+                                                                        "opacity_min": 0.1,
+                                                                        "sync": false
+                                                                    }
+                                                                },
+                                                                "size": {
+                                                                    "value": 3,
+                                                                    "random": true,
+                                                                    "anim": {
+                                                                        "enable": false,
+                                                                        "speed": 40,
+                                                                        "size_min": 0.1,
+                                                                        "sync": false
+                                                                    }
+                                                                },
+                                                                "line_linked": {
+                                                                    "enable": true,
+                                                                    "distance": 150,
+                                                                    "color": "#00E676",
+                                                                    "opacity": 0.2,
+                                                                    "width": 1
+                                                                },
+                                                                "move": {
+                                                                    "enable": true,
+                                                                    "speed": 2,
+                                                                    "direction": "none",
+                                                                    "random": false,
+                                                                    "straight": false,
+                                                                    "out_mode": "out",
+                                                                    "bounce": false,
+                                                                    "attract": {
+                                                                        "enable": false,
+                                                                        "rotateX": 600,
+                                                                        "rotateY": 1200
+                                                                    }
+                                                                }
+                                                            },
+                                                            "interactivity": {
+                                                                "detect_on": "canvas",
+                                                                "events": {
+                                                                    "onhover": {
+                                                                        "enable": true,
+                                                                        "mode": "grab"
+                                                                    },
+                                                                    "onclick": {
+                                                                        "enable": true,
+                                                                        "mode": "push"
+                                                                    },
+                                                                    "resize": true
+                                                                },
+                                                                "modes": {
+                                                                    "grab": {
+                                                                        "distance": 140,
+                                                                        "line_linked": {
+                                                                            "opacity": 1
+                                                                        }
+                                                                    },
+                                                                    "bubble": {
+                                                                        "distance": 400,
+                                                                        "size": 40,
+                                                                        "duration": 2,
+                                                                        "opacity": 8,
+                                                                        "speed": 3
+                                                                    },
+                                                                    "repulse": {
+                                                                        "distance": 200,
+                                                                        "duration": 0.4
+                                                                    },
+                                                                    "push": {
+                                                                        "particles_nb": 4
+                                                                    },
+                                                                    "remove": {
+                                                                        "particles_nb": 2
+                                                                    }
+                                                                }
+                                                            },
+                                                            "retina_detect": true
+                                                        });
+                                                    } else {
+                                                        console.warn("particles.js not loaded");
+                                                    }
 
-                    // Disable further rating
-                    document.getElementById('rating-stars').style.pointerEvents = 'none';
-                    document.getElementById('already-rated').style.display = 'block';
+                                                    // Generate a unique browser fingerprint
+                                                    function generateBrowserFingerprint() {
+                                                        const userAgent = navigator.userAgent;
+                                                        const screenWidth = window.screen.width;
+                                                        const screenHeight = window.screen.height;
+                                                        const colorDepth = window.screen.colorDepth;
+                                                        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                                                        const language = navigator.language;
 
-                    setTimeout(() => {
-                        ratingMessage.textContent = '';
-                    }, 3000);
-                }
-            });
-        }
+                                                        // Combine these values to create a unique fingerprint
+                                                        const fingerprint = userAgent + "-" + screenWidth + "x" + screenHeight + "-" + colorDepth + "-" + timezone + "-" + language;
 
-        // Function to highlight stars
-        function highlightStars(rating) {
-            stars.forEach(star => {
-                const starRating = parseInt(star.getAttribute('data-rating'));
-                if (starRating <= rating) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
-                }
-            });
-        }
+                                                        // Hash the fingerprint for privacy
+                                                        let hash = 0;
+                                                        for (let i = 0; i < fingerprint.length; i++) {
+                                                            const char = fingerprint.charCodeAt(i);
+                                                            hash = ((hash << 5) - hash) + char;
+                                                            hash = hash & hash; // Convert to 32bit integer
+                                                        }
 
-        // Function to reset stars
-        function resetStars() {
-            stars.forEach(star => {
-                star.classList.remove('active');
-            });
-        }
+                                                        return 'browser_' + Math.abs(hash).toString(16);
+                                                    }
 
-        // Function to show rating message
-        function showRatingMessage(rating) {
-            const messages = [
-                '',
-                'Poor',
-                'Fair',
-                'Good',
-                'Very Good',
-                'Excellent'
-            ];
-            ratingMessage.textContent = messages[rating];
-        }
+                                                    // Get or create browser fingerprint
+                                                    const browserFingerprint = generateBrowserFingerprint();
 
-        // Function to submit rating
-        function submitRating(rating) {
-            // Get current ratings from localStorage
-            let ratings = JSON.parse(localStorage.getItem('actionNStuffRatings')) || [];
+                                                    // Display current stats
+                                                    displayStats();
 
-            // Add new rating with browser fingerprint
-            ratings.push({
-                value: rating,
-                fingerprint: browserFingerprint,
-                timestamp: new Date().toISOString()
-            });
+                                                    // Check if user has already rated
+                                                    checkIfUserHasRated();
 
-            // Save updated ratings to localStorage
-            localStorage.setItem('actionNStuffRatings', JSON.stringify(ratings));
+                                                    // Function to display current stats
+                                                    function displayStats() {
+                                                        // Get stats from database
+                                                        document.getElementById('view-count').textContent = database.data.views || 0;
+                                                        document.getElementById('download-count').textContent = database.data.downloads || 0;
+                                                        document.getElementById('avg-rating').textContent = database.getAverageRating();
+                                                        document.getElementById('total-ratings').textContent = database.data.ratings ? database.data.ratings.length : 0;
+                                                    }
 
-            // Update stats display
-            displayStats();
+                                                    // Function to track downloads
+                                                    async function trackDownload() {
+                                                        // Check if this browser has already downloaded
+                                                        const hasDownloaded = localStorage.getItem('actionNStuffDownloaded_' + browserFingerprint);
 
-            // In a real implementation, you would also send this to a server
-            // Example: fetch('/api/submit-rating', { 
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify({ 
-            //     rating,
-            //     fingerprint: browserFingerprint
-            //   })
-            // });
-        }
+                                                        if (!hasDownloaded) {
+                                                            // This is a new download from this browser
+                                                            await database.incrementDownloads();
 
-        // Original fetch function for version info with download tracking
-        fetch('/api/latest')
-            .then(res => res.json())
-            .then(data => {
-                const info = document.getElementById('version-info');
-                const btn = document.getElementById('download-btn');
-                const changelog = document.getElementById('changelog');
+                                                            // Mark this browser as having downloaded
+                                                            localStorage.setItem('actionNStuffDownloaded_' + browserFingerprint, 'true');
+                                                        }
 
-                if (data.error) {
-                    info.innerHTML = '<div class="alert alert-warning">No version available at this time.</div>';
-                    return;
-                }
+                                                        // Update the download count display
+                                                        document.getElementById('download-count').textContent = database.data.downloads;
+                                                    }
 
-                info.innerHTML = `
-                    <div class="text-center">
-                        <h3>Latest Version</h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div><strong>Version:</strong></div>
-                            <div>${data.version}</div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <div><strong>Last Updated:</strong></div>
-                            <div>${data.updateDate}</div>
-                        </div>
-                    </div>
-                `;
+                                                    // Check if user has already rated
+                                                    function checkIfUserHasRated() {
+                                                        const hasRated = database.hasUserRated(browserFingerprint);
 
-                btn.href = data.downloadUrl;
-                btn.innerHTML = `<i class="fas fa-download me-2"></i>Download ActionNStuff ${data.version} (.mcpack)`;
-                btn.style.display = 'inline-block';
+                                                        if (hasRated) {
+                                                            // User has already rated, show message and disable rating
+                                                            document.getElementById('rating-stars').style.pointerEvents = 'none';
+                                                            document.getElementById('already-rated').style.display = 'block';
 
-                // Add download tracking to the download button
-                btn.addEventListener('click', function(e) {
-                    trackDownload();
-                    // Continue with the download (don't prevent default)
-                });
+                                                            // Find user's rating and highlight those stars
+                                                            const userRating = database.getUserRating(browserFingerprint);
+                                                            if (userRating) {
+                                                                const stars = document.querySelectorAll('.star');
+                                                                stars.forEach(star => {
+                                                                    const starRating = parseInt(star.getAttribute('data-rating'));
+                                                                    if (starRating <= userRating) {
+                                                                        star.classList.add('active');
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    }
 
-                if (data.changelog && data.changelog.trim()) {
-                    const changelogTitle = document.createElement('h4');
-                    changelogTitle.textContent = 'Changelog';
-                    changelogTitle.className = 'mb-3';
+                                                    // Rating system functionality
+                                                    const stars = document.querySelectorAll('.star');
+                                                    const ratingMessage = document.getElementById('rating-message');
+                                                    const submitButton = document.getElementById('submit-rating');
+                                                    let selectedRating = 0;
 
-                    changelog.innerHTML = '';
-                    changelog.appendChild(changelogTitle);
+                                                    // Check if user has already rated
+                                                    const hasRated = database.hasUserRated(browserFingerprint);
 
-                    const changelogContent = document.createElement('div');
-                    changelogContent.textContent = data.changelog;
-                    changelog.appendChild(changelogContent);
+                                                    if (!hasRated) {
+                                                        // Add event listeners to stars
+                                                        stars.forEach(star => {
+                                                            star.addEventListener('mouseover', function() {
+                                                                const rating = parseInt(this.getAttribute('data-rating'));
+                                                                highlightStars(rating);
+                                                                showRatingMessage(rating);
+                                                            });
 
-                    changelog.style.display = 'block';
-                }
-            })
-            .catch(err => {
-                document.getElementById('version-info').innerHTML = '<div class="alert alert-danger">Failed to load version info. Please try again later.</div>';
-                console.error(err);
-            });
+                                                            star.addEventListener('mouseout', function() {
+                                                                if (selectedRating === 0) {
+                                                                    resetStars();
+                                                                    ratingMessage.textContent = '';
+                                                                } else {
+                                                                    highlightStars(selectedRating);
+                                                                    showRatingMessage(selectedRating);
+                                                                }
+                                                            });
 
-        // Add scroll reveal animations
-        const animateElements = document.querySelectorAll('.feature-card, .feature-item, .section-title');
+                                                            star.addEventListener('click', function() {
+                                                                selectedRating = parseInt(this.getAttribute('data-rating'));
+                                                                highlightStars(selectedRating);
+                                                                showRatingMessage(selectedRating);
+                                                                submitButton.style.display = 'inline-block';
+                                                            });
+                                                        });
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
+                                                        // Submit rating button
+                                                        submitButton.addEventListener('click', async function() {
+                                                            if (selectedRating > 0) {
+                                                                const success = await submitRating(selectedRating);
+                                                                if (success) {
+                                                                    submitButton.style.display = 'none';
+                                                                    ratingMessage.textContent = 'Thanks for your rating!';
 
-        animateElements.forEach(element => {
-            observer.observe(element);
-        });
-    }
-</script>
+                                                                    // Disable further rating
+                                                                    document.getElementById('rating-stars').style.pointerEvents = 'none';
+                                                                    document.getElementById('already-rated').style.display = 'block';
+
+                                                                    setTimeout(() => {
+                                                                        ratingMessage.textContent = '';
+                                                                    }, 3000);
+                                                                } else {
+                                                                    ratingMessage.textContent = 'Failed to save rating. Please try again.';
+                                                                    setTimeout(() => {
+                                                                        ratingMessage.textContent = '';
+                                                                    }, 3000);
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+
+                                                    // Function to highlight stars
+                                                    function highlightStars(rating) {
+                                                        stars.forEach(star => {
+                                                            const starRating = parseInt(star.getAttribute('data-rating'));
+                                                            if (starRating <= rating) {
+                                                                star.classList.add('active');
+                                                            } else {
+                                                                star.classList.remove('active');
+                                                            }
+                                                        });
+                                                    }
+
+                                                    // Function to reset stars
+                                                    function resetStars() {
+                                                        stars.forEach(star => {
+                                                            star.classList.remove('active');
+                                                        });
+                                                    }
+
+                                                    // Function to show rating message
+                                                    function showRatingMessage(rating) {
+                                                        const messages = [
+                                                            '',
+                                                            'Poor',
+                                                            'Fair',
+                                                            'Good',
+                                                            'Very Good',
+                                                            'Excellent'
+                                                        ];
+                                                        ratingMessage.textContent = messages[rating];
+                                                    }
+
+                                                    // Function to submit rating
+                                                    async function submitRating(rating) {
+                                                        // Add rating to database
+                                                        const success = await database.addRating(browserFingerprint, rating);
+                                                        if (success) {
+                                                            // Reload the database to ensure the latest data is reflected
+                                                            await database.load();
+                                                            // Update stats display
+                                                            displayStats();
+                                                            return true;
+                                                        }
+                                                        return false;
+                                                    }
+
+                                                    // Original fetch function for version info with download tracking
+                                                    fetch('/api/latest')
+                                                        .then(res => res.json())
+                                                        .then(data => {
+                                                            const info = document.getElementById('version-info');
+                                                            const btn = document.getElementById('download-btn');
+                                                            const changelog = document.getElementById('changelog');
+
+                                                            if (data.error) {
+                                                                info.innerHTML = '<div class="alert alert-warning">No version available at this time.</div>';
+                                                                return;
+                                                            }
+
+                                                            info.innerHTML = '<div class="text-center">' +
+                                                                '<h3>Latest Version</h3>' +
+                                                                '<div class="d-flex justify-content-between align-items-center">' +
+                                                                '<div><strong>Version:</strong></div>' +
+                                                                '<div>' + data.version + '</div>' +
+                                                                '</div>' +
+                                                                '<div class="d-flex justify-content-between align-items-center mt-2">' +
+                                                                '<div><strong>Last Updated:</strong></div>' +
+                                                                '<div>' + data.updateDate + '</div>' +
+                                                                '</div>' +
+                                                                '</div>';
+
+                                                            btn.href = data.downloadUrl;
+                                                            btn.innerHTML = '<i class="fas fa-download me-2"></i>Download ActionNStuff ' + data.version + ' (.mcpack)';
+                                                            btn.style.display = 'inline-block';
+
+                                                            // Add download tracking to the download button
+                                                            btn.addEventListener('click', function(e) {
+                                                                trackDownload();
+                                                                // Continue with the download (don't prevent default)
+                                                            });
+
+                                                            if (data.changelog && data.changelog.trim()) {
+                                                                const changelogTitle = document.createElement('h4');
+                                                                changelogTitle.textContent = 'Changelog';
+                                                                changelogTitle.className = 'mb-3';
+
+                                                                changelog.innerHTML = '';
+                                                                changelog.appendChild(changelogTitle);
+
+                                                                const changelogContent = document.createElement('div');
+                                                                changelogContent.textContent = data.changelog;
+                                                                changelog.appendChild(changelogContent);
+
+                                                                changelog.style.display = 'block';
+                                                            }
+                                                        })
+                                                        .catch(err => {
+                                                            document.getElementById('version-info').innerHTML = '<div class="alert alert-danger">Failed to load version info. Please try again later.</div>';
+                                                            console.error(err);
+                                                        });
+
+                                                    // Add scroll reveal animations
+                                                    const animateElements = document.querySelectorAll('.feature-card, .feature-item, .section-title');
+
+                                                    if ('IntersectionObserver' in window) {
+                                                        const observer = new IntersectionObserver((entries) => {
+                                                            entries.forEach(entry => {
+                                                                if (entry.isIntersecting) {
+                                                                    entry.target.style.opacity = '1';
+                                                                    entry.target.style.transform = 'translateY(0)';
+                                                                    observer.unobserve(entry.target);
+                                                                }
+                                                            });
+                                                        }, {
+                                                            threshold: 0.1
+                                                        });
+
+                                                        animateElements.forEach(element => {
+                                                            observer.observe(element);
+                                                        });
+                                                    } else {
+                                                        // Fallback for browsers that don't support IntersectionObserver
+                                                        animateElements.forEach(element => {
+                                                            element.style.opacity = '1';
+                                                            element.style.transform = 'translateY(0)';
+                                                        });
+                                                    }
+                                                }
+                                            </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93e7220e4bec12e9',t:'MTc0NzAyMzcyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
